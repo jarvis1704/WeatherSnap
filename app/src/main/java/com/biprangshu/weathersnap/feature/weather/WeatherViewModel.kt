@@ -28,6 +28,7 @@ class WeatherViewModel @Inject constructor(
     fun onSearchQueryChanged(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
         searchDebounceJob?.cancel()
+        //query stayes idle until 2 characters are typed
         if (query.length < 2) {
             _uiState.update {
                 it.copy(
@@ -37,6 +38,7 @@ class WeatherViewModel @Inject constructor(
             }
             return
         }
+        //searches when typed query is greater than 2 characters
         searchDebounceJob = viewModelScope.launch {
             delay(300)
             _uiState.update { it.copy(suggestionsState = SuggestionsState.Loading) }
@@ -62,6 +64,7 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
+    //function to get weather data of selected city
     fun onCitySelected(city: City) {
         lastSelectedCity = city
         _uiState.update {
@@ -93,6 +96,7 @@ class WeatherViewModel @Inject constructor(
         _uiState.update { it.copy(isSuggestionsDropdownVisible = false) }
     }
 
+    //called when explicitly search button is clicked
     fun onRetry() {
         val city = lastSelectedCity ?: return
         onCitySelected(city)

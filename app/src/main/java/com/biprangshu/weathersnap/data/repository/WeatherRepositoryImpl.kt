@@ -22,10 +22,12 @@ class WeatherRepositoryImpl @Inject constructor(
     private val reportDao: ReportDao,
 ) : WeatherRepository {
 
+    //local caching of recently searched cities
     private val suggestionCache = mutableMapOf<String, List<City>>()
 
     override suspend fun searchCities(query: String): Result<List<City>> {
         suggestionCache[query]?.let { return Result.success(it) }
+        //if failed, autowraps under result.failure
         return runCatching {
             val response = geocodingApi.searchCities(name = query)
             val cities = response.results?.map { it.toDomain() } ?: emptyList()
@@ -48,6 +50,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override fun getAllReports(): Flow<List<Report>> =
         reportDao.getAllReports().map { entities -> entities.map { it.toDomain() } }
 
+    //mappers
     private fun CityDto.toDomain() = City(
         id = id,
         name = name,

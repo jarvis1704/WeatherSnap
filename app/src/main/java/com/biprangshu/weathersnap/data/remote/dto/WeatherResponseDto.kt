@@ -9,6 +9,7 @@ data class WeatherResponseDto(
 )
 
 data class CurrentWeatherDto(
+    //can extend for more information if required (based on the json output of the api)
     @SerializedName("temperature_2m") val temperature2m: Double,
     @SerializedName("relative_humidity_2m") val relativeHumidity2m: Int,
     @SerializedName("apparent_temperature") val apparentTemperature: Double,
