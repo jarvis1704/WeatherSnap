@@ -64,9 +64,12 @@ fun CreateReportScreen(
             }
     }
 
-    //go to homescreen after saved
     LaunchedEffect(state.isSaved) {
-        if (state.isSaved) navController.popBackStack()
+        if (state.isSaved) {
+            navController.navigate(Screen.SaveConfirmation.route) {
+                popUpTo(Screen.CreateReport.route) { inclusive = true }
+            }
+        }
     }
 
     Column(
