@@ -49,6 +49,7 @@ fun CreateReportScreen(
     viewModel: CreateReportViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val compressionInfo by viewModel.compressionInfo.collectAsStateWithLifecycle()
 
     //for getting the image path right after capturing the image in viewfinder
     LaunchedEffect(Unit) {
@@ -140,6 +141,9 @@ fun CreateReportScreen(
             PhotoCaptureCard(
                 imagePath = state.capturedImagePath,
                 onCaptureClick = { navController.navigate(Screen.Camera.route) },
+                compressedSize = compressionInfo.compressedSize,
+                originalSize = compressionInfo.originalSize
+
             )
 
             //notes card

@@ -33,6 +33,13 @@ data class CreateReportUiState(
     val error: String? = null,
 )
 
+data class CompressionInfo(
+    val imagePath: String = "",
+    val originalSize: Long = 0L,
+    val compressedSize: Long = 0L
+
+)
+
 @HiltViewModel
 class CreateReportViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -42,6 +49,10 @@ class CreateReportViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(CreateReportUiState())
     val uiState: StateFlow<CreateReportUiState> = _uiState
+
+    private val _compressionInfo = MutableStateFlow(CompressionInfo())
+
+    val compressionInfo: StateFlow<CompressionInfo> = _compressionInfo
 
     init {
         //getting weather data from existing state handle
@@ -63,26 +74,39 @@ class CreateReportViewModel @Inject constructor(
 
     fun onImageCaptured(path: String) {
         _uiState.update { it.copy(capturedImagePath = path) }
+        val imagePath = _uiState.value.capturedImagePath ?: ""
+
+        viewModelScope.launch {
+            val (originalSize, compressedPath, compressedSize) = withContext(Dispatchers.IO) {
+                compressImage(imagePath)
+            }
+
+            _compressionInfo.update {
+                it.copy(
+                    imagePath = compressedPath,
+                    originalSize = originalSize,
+                    compressedSize = compressedSize
+                )
+            }
+
+        }
+
     }
 
     fun onSaveReport() {
         val state = _uiState.value
         val weather = state.weather ?: return
-        val imagePath = state.capturedImagePath ?: ""
 
         _uiState.update { it.copy(isSaving = true, error = null) }
 
         viewModelScope.launch {
             try {
-                val (originalSize, compressedPath, compressedSize) = withContext(Dispatchers.IO) {
-                    compressImage(imagePath)
-                }
                 val report = Report(
                     weather = weather,
                     notes = state.notes,
-                    imagePath = compressedPath,
-                    originalImageSizeBytes = originalSize,
-                    compressedImageSizeBytes = compressedSize,
+                    imagePath = _compressionInfo.value.imagePath,
+                    originalImageSizeBytes = _compressionInfo.value.originalSize,
+                    compressedImageSizeBytes = _compressionInfo.value.compressedSize,
                     createdAt = System.currentTimeMillis(),
                 )
                 repository.saveReport(report)

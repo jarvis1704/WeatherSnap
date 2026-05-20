@@ -48,6 +48,7 @@ import com.biprangshu.weathersnap.ui.theme.DarkOliveText
 import com.biprangshu.weathersnap.ui.theme.LimeAccent
 import com.biprangshu.weathersnap.ui.theme.OnDarkSurface
 import com.biprangshu.weathersnap.ui.theme.OnDarkSurfaceVariant
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -61,6 +62,8 @@ fun CameraScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+
+    //permission for camera
     var permissionGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -88,9 +91,12 @@ fun CameraScreen(
     LaunchedEffect(permissionGranted) {
         if (!permissionGranted) return@LaunchedEffect
 
-        val cameraProvider = suspendCoroutine { cont ->
+        val cameraProvider = suspendCancellableCoroutine { cont ->
             val future = ProcessCameraProvider.getInstance(context)
-            future.addListener({ cont.resume(future.get()) }, ContextCompat.getMainExecutor(context))
+            future.addListener(
+                { cont.resume(future.get()) },
+                ContextCompat.getMainExecutor(context)
+            )
         }
 
         val preview = Preview.Builder().build().also {
@@ -174,6 +180,7 @@ fun CameraScreen(
                 }
             }
         } else {
+            //condition when camera permission is not granted
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -204,6 +211,7 @@ fun CameraScreen(
             }
         }
 
+        //back button
         Button(
             onClick = { navController.popBackStack() },
             modifier = Modifier

@@ -45,13 +45,13 @@ fun WeatherInfoCard(weather: Weather) {
             Row(
                 modifier = Modifier.Companion.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Companion.Top,
+                verticalAlignment = Alignment.Top,
             ) {
-                Column(modifier = Modifier.Companion.weight(1f)) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = weather.cityName,
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Companion.Bold,
+                        fontWeight = FontWeight.Bold,
                         color = OnDarkSurface,
                     )
                     Text(
@@ -61,30 +61,30 @@ fun WeatherInfoCard(weather: Weather) {
                     )
                 }
                 Box(
-                    modifier = Modifier.Companion
-                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
                         .background(TempBadgeBg)
                         .padding(horizontal = 14.dp, vertical = 10.dp),
-                    contentAlignment = Alignment.Companion.Center,
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "${weather.temperatureCelsius.toInt()}°C",
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.Companion.Bold,
-                        color = Color.Companion.White,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
                     )
                 }
             }
 
             Row(
-                modifier = Modifier.Companion.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 ReportMetricCard(
                     label = "Humidity",
                     value = "${weather.humidityPercent}%",
                     valueColor = HumidityColor,
-                    modifier = Modifier.Companion.weight(1f),
+                    modifier = Modifier.weight(1f),
                 )
                 ReportMetricCard(
                     label = "Wind",
