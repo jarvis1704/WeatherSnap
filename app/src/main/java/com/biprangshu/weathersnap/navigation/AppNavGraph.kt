@@ -9,7 +9,7 @@ import androidx.navigation.navArgument
 import com.biprangshu.weathersnap.feature.camera.CameraScreen
 import com.biprangshu.weathersnap.feature.createreport.CreateReportScreen
 import com.biprangshu.weathersnap.feature.savedreports.SaveConfirmationScreen
-import com.biprangshu.weathersnap.feature.savedreports.SavedReportsScreen
+import com.biprangshu.weathersnap.feature.savedreports.SavedReportScreen
 import com.biprangshu.weathersnap.feature.weather.WeatherScreen
 
 sealed class Screen(val route: String) {
@@ -47,7 +47,7 @@ fun AppNavGraph(navController: NavHostController) {
         }
 
         composable(Screen.SavedReports.route) {
-            SavedReportsScreen(navController = navController)
+            SavedReportScreen(navController = navController)
         }
 
         composable(Screen.SaveConfirmation.route) {
