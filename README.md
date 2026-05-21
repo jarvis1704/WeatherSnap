@@ -1,6 +1,6 @@
 # WeatherSnap
 
-Android intern assignment — search live weather, capture a field photo, compress it, add notes, and save a report locally.
+Android intern assignment for Trakzio — search live weather, capture a field photo, compress it, add notes, and save a report locally.
 
 ---
 
