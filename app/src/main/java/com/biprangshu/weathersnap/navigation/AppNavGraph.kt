@@ -79,7 +79,7 @@ fun AppNavGraph(navController: NavHostController) {
             enterTransition = modalEnter,
             exitTransition = modalExit,
             popEnterTransition = modalPopEnter,
-            popExitTransition = scalePopExit,
+            popExitTransition = modalPopExit,
         ) {
             SaveConfirmationScreen(navController = navController)
         }
