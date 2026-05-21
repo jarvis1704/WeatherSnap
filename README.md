@@ -54,6 +54,8 @@ cd WeatherSnap
 
 ---
 
+### Google Drive Demo Video Link: https://drive.google.com/file/d/1M-kpcYwxD9_qS3v-xDuvW8-jzfiyo0sC/view?usp=sharing
+
 ## Architecture
 
 Single-module MVVM. No use-cases layer — kept flat intentionally for assignment scope.
