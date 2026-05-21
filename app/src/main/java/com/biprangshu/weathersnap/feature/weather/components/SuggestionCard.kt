@@ -19,7 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.biprangshu.weathersnap.domain.model.City
-import com.biprangshu.weathersnap.feature.weather.SuggestionsState
+import com.biprangshu.weathersnap.feature.weather.viewmodel.SuggestionsState
 import com.biprangshu.weathersnap.ui.theme.DarkSurface
 import com.biprangshu.weathersnap.ui.theme.DarkSurfaceVariant
 import com.biprangshu.weathersnap.ui.theme.OnDarkSurface

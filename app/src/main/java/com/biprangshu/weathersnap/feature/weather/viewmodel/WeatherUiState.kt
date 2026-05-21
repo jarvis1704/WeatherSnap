@@ -1,4 +1,4 @@
-package com.biprangshu.weathersnap.feature.weather
+package com.biprangshu.weathersnap.feature.weather.viewmodel
 
 import com.biprangshu.weathersnap.domain.model.City
 import com.biprangshu.weathersnap.domain.model.Weather

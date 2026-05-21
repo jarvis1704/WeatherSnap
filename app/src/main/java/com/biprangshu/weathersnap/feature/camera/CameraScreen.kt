@@ -43,6 +43,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.biprangshu.weathersnap.feature.camera.viewmodel.CameraViewModel
 import com.biprangshu.weathersnap.ui.theme.DarkBackground
 import com.biprangshu.weathersnap.ui.theme.DarkOliveText
 import com.biprangshu.weathersnap.ui.theme.LimeAccent
@@ -51,7 +52,6 @@ import com.biprangshu.weathersnap.ui.theme.OnDarkSurfaceVariant
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @Composable
 fun CameraScreen(

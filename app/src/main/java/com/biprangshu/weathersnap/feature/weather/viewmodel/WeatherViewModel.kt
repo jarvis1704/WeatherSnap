@@ -1,4 +1,4 @@
-package com.biprangshu.weathersnap.feature.weather
+package com.biprangshu.weathersnap.feature.weather.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

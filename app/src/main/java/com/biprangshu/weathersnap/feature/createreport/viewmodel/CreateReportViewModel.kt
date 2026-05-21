@@ -1,4 +1,4 @@
-package com.biprangshu.weathersnap.feature.createreport
+package com.biprangshu.weathersnap.feature.createreport.viewmodel
 
 import android.content.Context
 import android.graphics.Bitmap

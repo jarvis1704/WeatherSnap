@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import com.biprangshu.weathersnap.feature.createreport.components.FieldNotesCard
 import com.biprangshu.weathersnap.feature.createreport.components.PhotoCaptureCard
 import com.biprangshu.weathersnap.feature.createreport.components.WeatherInfoCard
+import com.biprangshu.weathersnap.feature.createreport.viewmodel.CreateReportViewModel
 import com.biprangshu.weathersnap.navigation.Screen
 import com.biprangshu.weathersnap.ui.theme.DarkBackground
 import com.biprangshu.weathersnap.ui.theme.DarkOliveText

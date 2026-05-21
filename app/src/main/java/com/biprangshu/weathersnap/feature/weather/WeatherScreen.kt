@@ -27,10 +27,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.biprangshu.weathersnap.feature.weather.components.EmptyStateCard
+import com.biprangshu.weathersnap.feature.weather.components.ErrorCard
+import com.biprangshu.weathersnap.feature.weather.components.LoadingStateCard
 import com.biprangshu.weathersnap.feature.weather.components.SearchCard
 import com.biprangshu.weathersnap.feature.weather.components.SuggestionsCard
 import com.biprangshu.weathersnap.feature.weather.components.WeatherHeaderCard
 import com.biprangshu.weathersnap.feature.weather.components.WeatherSuccessCard
+import com.biprangshu.weathersnap.feature.weather.viewmodel.WeatherState
+import com.biprangshu.weathersnap.feature.weather.viewmodel.WeatherViewModel
 import com.biprangshu.weathersnap.navigation.Screen
 import com.biprangshu.weathersnap.ui.theme.DarkBackground
 import com.google.gson.Gson

@@ -1,6 +1,5 @@
 package com.biprangshu.weathersnap.feature.createreport.components
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.biprangshu.weathersnap.feature.createreport.CompressionInfo
 import com.biprangshu.weathersnap.ui.theme.BannerGradientEnd
 import com.biprangshu.weathersnap.ui.theme.BannerGradientStart
 import com.biprangshu.weathersnap.ui.theme.DarkOliveText

@@ -1,4 +1,4 @@
-package com.biprangshu.weathersnap.feature.savedreports
+package com.biprangshu.weathersnap.feature.savedreports.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,5 +16,5 @@ class SavedReportsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val reports: StateFlow<List<Report>> = repository.getAllReports()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5_000), emptyList())
 }
