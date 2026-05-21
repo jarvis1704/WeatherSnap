@@ -94,7 +94,7 @@ fun WeatherScreen(
                 WeatherState.Empty -> EmptyStateCard()
                 WeatherState.Loading -> LoadingStateCard()
                 is WeatherState.Error -> ErrorCard(
-                    message = state.message,
+                    message = "Check your connection and try again",
                     onRetry = {
                         haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                         viewModel.onRetry()
