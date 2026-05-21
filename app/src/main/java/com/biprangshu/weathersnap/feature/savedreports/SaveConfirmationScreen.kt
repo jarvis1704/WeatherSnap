@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -68,8 +65,12 @@ fun SaveConfirmationScreen(
     viewModel: SavedReportsViewModel = hiltViewModel(),
 ) {
     val reports by viewModel.reports.collectAsStateWithLifecycle()
-    val count = reports.size
-    val subtitle = if (count == 1) "1 report stored locally" else "$count reports stored locally"
+    val report = reports.firstOrNull()
+
+    var cardVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(report) {
+        if (report != null) cardVisible = true
+    }
 
     Column(
         modifier = Modifier
@@ -103,7 +104,7 @@ fun SaveConfirmationScreen(
                         color = DarkOliveText,
                     )
                     Text(
-                        text = subtitle,
+                        text = "1 report stored locally",
                         style = MaterialTheme.typography.bodyMedium,
                         color = DarkOliveText.copy(alpha = 0.7f),
                     )
@@ -125,7 +126,7 @@ fun SaveConfirmationScreen(
             }
         }
 
-        if (reports.isEmpty()) {
+        if (report == null) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
@@ -137,19 +138,12 @@ fun SaveConfirmationScreen(
                 )
             }
         } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                itemsIndexed(reports, key = { _, r -> r.id }) { index, report ->
-                    var visible by remember { mutableStateOf(false) }
-                    LaunchedEffect(Unit) { visible = true }
-                    AnimatedVisibility(
-                        visible = visible,
-                        enter = fadeIn() + slideInVertically(initialOffsetY = { it / 4 }),
-                    ) {
-                        ReportCard(report = report)
-                    }
+            Column(modifier = Modifier.padding(16.dp)) {
+                AnimatedVisibility(
+                    visible = cardVisible,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 4 }),
+                ) {
+                    ReportCard(report = report)
                 }
             }
         }
