@@ -27,8 +27,30 @@ fun AppNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.Weather.route,
+        enterTransition = horizontalEnter,
+        exitTransition = horizontalExit,
+        popEnterTransition = horizontalPopEnter,
+        popExitTransition = horizontalPopExit,
     ) {
-        composable(Screen.Weather.route) {
+        composable(
+            route = Screen.Weather.route,
+            // Modal destinations slide up — don't slide Weather left behind them
+            exitTransition = {
+                val dest = targetState.destination.route
+                if (dest == Screen.CreateReport.route || dest == Screen.SaveConfirmation.route)
+                    run(modalExit)
+                else
+                    run(horizontalExit)
+            },
+            // Modal screens slide down on dismiss — Weather stays fixed, just fades back in
+            popEnterTransition = {
+                when (initialState.destination.route) {
+                    Screen.SaveConfirmation.route -> run(scalePopEnter)
+                    Screen.CreateReport.route -> run(modalPopEnter)
+                    else -> run(horizontalPopEnter)
+                }
+            },
+        ) {
             WeatherScreen(navController = navController)
         }
 
@@ -37,12 +59,22 @@ fun AppNavGraph(navController: NavHostController) {
             arguments = listOf(
                 navArgument("weatherJson") { type = NavType.StringType },
             ),
+            enterTransition = modalEnter,
+            exitTransition = modalExit,
+            popEnterTransition = modalPopEnter,
+            popExitTransition = modalPopExit,
         ) { backStackEntry ->
             val weatherJson = backStackEntry.arguments?.getString("weatherJson") ?: ""
             CreateReportScreen(navController = navController, weatherJson = weatherJson)
         }
 
-        composable(Screen.Camera.route) {
+        composable(
+            route = Screen.Camera.route,
+            enterTransition = modalEnter,
+            exitTransition = modalExit,
+            popEnterTransition = modalPopEnter,
+            popExitTransition = modalPopExit,
+        ) {
             CameraScreen(navController = navController)
         }
 
@@ -50,7 +82,13 @@ fun AppNavGraph(navController: NavHostController) {
             SavedReportScreen(navController = navController)
         }
 
-        composable(Screen.SaveConfirmation.route) {
+        composable(
+            route = Screen.SaveConfirmation.route,
+            enterTransition = modalEnter,
+            exitTransition = modalExit,
+            popEnterTransition = modalPopEnter,
+            popExitTransition = scalePopExit,
+        ) {
             SaveConfirmationScreen(navController = navController)
         }
     }
