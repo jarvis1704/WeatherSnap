@@ -42,7 +42,7 @@ data class CompressionInfo(
 
 @HiltViewModel
 class CreateReportViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val repository: WeatherRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
@@ -55,31 +55,53 @@ class CreateReportViewModel @Inject constructor(
     val compressionInfo: StateFlow<CompressionInfo> = _compressionInfo
 
     init {
-        //getting weather data from existing state handle
         val weatherJson = savedStateHandle.get<String>("weatherJson") ?: ""
-        if (weatherJson.isNotBlank()) {
+        val weather = if (weatherJson.isNotBlank()) {
             try {
                 val decoded = URLDecoder.decode(weatherJson, StandardCharsets.UTF_8.toString())
-                val weather = Gson().fromJson(decoded, Weather::class.java)
-                _uiState.update { it.copy(weather = weather) }
+                Gson().fromJson(decoded, Weather::class.java)
             } catch (_: Exception) {
                 Log.e("create_report", "failure in getting weather json from savedstate handle")
+                null
+            }
+        } else null
+
+        //developer's judgement challenge: using savedstatehandle to handle configuration changes or background process kill.
+        val notes = savedStateHandle.get<String>("notes") ?: ""
+        val capturedImagePath = savedStateHandle.get<String>("capturedImagePath")
+        val compressedPath = savedStateHandle.get<String>("compressedPath") ?: ""
+        val originalSize = savedStateHandle.get<Long>("originalSize") ?: 0L
+        val compressedSize = savedStateHandle.get<Long>("compressedSize") ?: 0L
+
+        _uiState.update { it.copy(weather = weather, notes = notes, capturedImagePath = capturedImagePath) }
+
+        if (compressedPath.isNotBlank()) {
+            _compressionInfo.update {
+                it.copy(imagePath = compressedPath, originalSize = originalSize, compressedSize = compressedSize)
             }
         }
     }
 
     fun onNotesChanged(notes: String) {
+        //on very keystroke, save notes to savedstatehandle
+        savedStateHandle["notes"] = notes
         _uiState.update { it.copy(notes = notes) }
     }
 
     fun onImageCaptured(path: String) {
+        //save path to savedstate handle to retain info after config change
+        savedStateHandle["capturedImagePath"] = path
         _uiState.update { it.copy(capturedImagePath = path) }
-        val imagePath = _uiState.value.capturedImagePath ?: ""
 
         viewModelScope.launch {
             val (originalSize, compressedPath, compressedSize) = withContext(Dispatchers.IO) {
-                compressImage(imagePath)
+                compressImage(path)
             }
+
+            //save path and size to savedstate handle to retain info after config change
+            savedStateHandle["compressedPath"] = compressedPath
+            savedStateHandle["originalSize"] = originalSize
+            savedStateHandle["compressedSize"] = compressedSize
 
             _compressionInfo.update {
                 it.copy(
@@ -88,9 +110,7 @@ class CreateReportViewModel @Inject constructor(
                     compressedSize = compressedSize
                 )
             }
-
         }
-
     }
 
     fun onSaveReport() {
@@ -110,6 +130,11 @@ class CreateReportViewModel @Inject constructor(
                     createdAt = System.currentTimeMillis(),
                 )
                 repository.saveReport(report)
+
+                //deleteing raw photo as compressed image is saved to room
+                withContext(Dispatchers.IO) {
+                    state.capturedImagePath?.let { File(it).delete() }
+                }
                 _uiState.update { it.copy(isSaving = false, isSaved = true) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isSaving = false, error = e.message) }
@@ -117,6 +142,18 @@ class CreateReportViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        //if report not saved or user discarded, delete the temp files
+        if (!_uiState.value.isSaved) {
+            val rawPath = _uiState.value.capturedImagePath
+            val compressedPath = _compressionInfo.value.imagePath
+            rawPath?.let { File(it).delete() }
+            if (compressedPath.isNotBlank()) File(compressedPath).delete()
+        }
+    }
+
+    //function to compress image
     private fun compressImage(inputPath: String): Triple<Long, String, Long> {
         if (inputPath.isBlank()) return Triple(0L, "", 0L)
 
